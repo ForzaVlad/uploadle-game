@@ -54,12 +54,6 @@ function clearOldProgress(currentDate) {
     // Date changed, clear old progress
     const oldProgressKey = `progress_${storedDate}`;
     localStorage.removeItem(oldProgressKey);
-    
-    // Clear individual puzzle results for old date
-    for (let i = 1; i <= 5; i++) {
-      localStorage.removeItem(`puzzle${i}_correct`);
-    }
-    
     console.log(`Cleared old progress for date: ${storedDate}`);
   }
   localStorage.setItem('current_puzzle_date', currentDate);
@@ -69,27 +63,9 @@ let guessCount = 0;
 const maxGuesses = 10;
 const currentPuzzle = getCurrentPuzzleNumber();
 
-// Check if user should be redirected on page load - run immediately
-(async function() {
-  if (getCurrentPuzzleNumber() !== -1) { // Don't redirect from index page
-    await checkAndRedirectIfNeeded();
-  }
-})();
-
-// Initialize the page after DOM loads
-document.addEventListener("DOMContentLoaded", async () => {
-  if (getCurrentPuzzleNumber() === -1) {
-    // On index page, just set up the current date for future use
-    try {
-      const today = await getTodayInCentralTime();
-      clearOldProgress(today);
-    } catch (error) {
-      console.error('Error setting up date on index:', error);
-    }
-  } else {
-    // On puzzle/results pages, load content if we haven't been redirected
-    loadPuzzleData();
-  }
+// Check if user should be redirected on page load
+document.addEventListener("DOMContentLoaded", () => {
+  checkAndRedirectIfNeeded();
 });
 
 async function checkAndRedirectIfNeeded() {
@@ -103,53 +79,53 @@ async function checkAndRedirectIfNeeded() {
     
     console.log(`Current page: ${currentPage}, Progress: ${currentProgress}`);
     
+    // If user is on index page, don't redirect
+    if (currentPage === -1) {
+      return; // Stay on index page
+    }
+    
     // If user is on results page
     if (currentPage === 0) {
       // Only allow if they've completed all puzzles
       if (currentProgress < 6) {
         console.log('User tried to access results without completing puzzles');
-        // Redirect to their current progress or start
-        const redirectTarget = currentProgress > 0 && currentProgress <= 5 
-          ? (currentProgress === 1 ? 'puzzle.html' : `puzzle${currentProgress}.html`)
-          : 'index.html';
-        window.location.replace(redirectTarget);
+        window.location.href = 'index.html';
         return;
       }
       // User completed all puzzles, allow results page
       return;
     }
     
-    // Handle puzzle pages
-    if (currentPage > 0) {
-      // If no progress, redirect to index
-      if (currentProgress === 0) {
-        console.log('No progress found, redirecting to index');
-        window.location.replace('index.html');
-        return;
-      }
-      
-      // If progress exists and user is on wrong page, redirect to correct page
-      if (currentProgress > 0 && currentProgress <= 5) {
-        if (currentPage !== currentProgress) {
-          console.log(`Redirecting from puzzle ${currentPage} to puzzle ${currentProgress}`);
-          const redirectUrl = currentProgress === 1 ? 'puzzle.html' : `puzzle${currentProgress}.html`;
-          window.location.replace(redirectUrl);
+    // If progress exists and user is on wrong page, redirect
+    if (currentProgress > 0) {
+      const expectedPage = currentProgress;
+      if (currentPage !== expectedPage) {
+        console.log(`Redirecting from puzzle ${currentPage} to puzzle ${expectedPage}`);
+        if (expectedPage <= 5) {
+          const redirectUrl = expectedPage === 1 ? 'puzzle.html' : `puzzle${expectedPage}.html`;
+          window.location.href = redirectUrl;
+          return;
+        } else {
+          // User completed all puzzles, go to results
+          window.location.href = 'results.html';
           return;
         }
-      } else if (currentProgress >= 6) {
-        // User completed all puzzles, should be on results
-        console.log('All puzzles completed, redirecting to results');
-        window.location.replace('results.html');
-        return;
       }
     }
     
-    // If we get here, user is on the correct page
-    console.log('User is on correct page, continuing...');
+    // If no progress and user is on a puzzle page, redirect to index
+    if (currentProgress === 0 && currentPage > 0) {
+      console.log('No progress found, redirecting to index');
+      window.location.href = 'index.html';
+      return;
+    }
+    
+    // User is on correct page, load puzzle data
+    loadPuzzleData();
     
   } catch (error) {
     console.error('Error in redirect check:', error);
-    // On error, allow normal loading but log the issue
+    loadPuzzleData(); // Fallback to normal loading
   }
 }
 
@@ -342,7 +318,7 @@ function showNextPuzzleButton() {
       saveProgress(6); // 6 indicates completed
     }
     
-    // Prevent going back by replacing history entry
+    // Prevent going back
     window.location.replace(config.nextPage);
   };
   
