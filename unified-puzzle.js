@@ -17,9 +17,6 @@ function getCurrentPuzzleNumber() {
   console.log('Current filename:', filename); // Debug log
   
   if (filename === 'puzzle.html') return 1;
-  if (filename === 'results.html') return 0; // Special case for results
-  if (filename === 'index.html' || filename === '') return -1; // Special case for index
-  
   const match = filename.match(/puzzle(\d+)\.html/);
   const puzzleNum = match ? parseInt(match[1]) : 1;
   
@@ -27,101 +24,13 @@ function getCurrentPuzzleNumber() {
   return puzzleNum;
 }
 
-// Progress tracking functions
-function getCurrentDateKey() {
-  // This will be set when we load the puzzle data
-  return localStorage.getItem('current_puzzle_date') || 'unknown';
-}
-
-function getProgressKey() {
-  return `progress_${getCurrentDateKey()}`;
-}
-
-function saveProgress(puzzleNumber) {
-  const dateKey = getCurrentDateKey();
-  localStorage.setItem(getProgressKey(), puzzleNumber.toString());
-  console.log(`Progress saved: puzzle ${puzzleNumber} for date ${dateKey}`);
-}
-
-function getProgress() {
-  const progress = localStorage.getItem(getProgressKey());
-  return progress ? parseInt(progress) : 0;
-}
-
-function clearOldProgress(currentDate) {
-  const storedDate = localStorage.getItem('current_puzzle_date');
-  if (storedDate && storedDate !== currentDate) {
-    // Date changed, clear old progress
-    const oldProgressKey = `progress_${storedDate}`;
-    localStorage.removeItem(oldProgressKey);
-    console.log(`Cleared old progress for date: ${storedDate}`);
-  }
-  localStorage.setItem('current_puzzle_date', currentDate);
-}
-
 let guessCount = 0;
 const maxGuesses = 10;
 const currentPuzzle = getCurrentPuzzleNumber();
 
-// Check if user should be redirected on page load
 document.addEventListener("DOMContentLoaded", () => {
-  checkAndRedirectIfNeeded();
+  loadPuzzleData();
 });
-
-async function checkAndRedirectIfNeeded() {
-  // First, get the current date to set up progress tracking
-  try {
-    const today = await getTodayInCentralTime();
-    clearOldProgress(today);
-    
-    const currentProgress = getProgress();
-    const currentPage = getCurrentPuzzleNumber();
-    
-    console.log(`Current page: ${currentPage}, Progress: ${currentProgress}`);
-    
-    // If user is on index page, don't redirect
-    if (currentPage === -1) {
-      return; // Stay on index page
-    }
-    
-    // If user is on results page
-    if (currentPage === 0) {
-      // Only allow if they've completed all puzzles
-      if (currentProgress < 6) {
-        console.log('User tried to access results without completing puzzles');
-        window.location.href = 'index.html';
-        return;
-      }
-      // User completed all puzzles, allow results page
-      return;
-    }
-    
-    // For puzzle pages, check if user is trying to go backwards or skip ahead
-    const maxAllowedPuzzle = Math.max(1, currentProgress); // At minimum, allow puzzle 1
-    
-    if (currentPage > maxAllowedPuzzle) {
-      // User is trying to skip ahead
-      console.log(`User trying to skip ahead from puzzle ${currentPage} to max allowed ${maxAllowedPuzzle}`);
-      const redirectUrl = maxAllowedPuzzle === 1 ? 'puzzle.html' : `puzzle${maxAllowedPuzzle}.html`;
-      window.location.href = redirectUrl;
-      return;
-    }
-    
-    // If user has completed all puzzles and tries to go back to a puzzle page
-    if (currentProgress >= 6 && currentPage > 0) {
-      console.log('User completed all puzzles, redirecting to results');
-      window.location.href = 'results.html';
-      return;
-    }
-    
-    // User is on correct page or allowed to be here, load puzzle data
-    loadPuzzleData();
-    
-  } catch (error) {
-    console.error('Error in redirect check:', error);
-    loadPuzzleData(); // Fallback to normal loading
-  }
-}
 
 // Get current date in Central Time from a reliable external source
 async function getTodayInCentralTime() {
@@ -303,17 +212,7 @@ function showNextPuzzleButton() {
   nextButton.style.cursor = "pointer";
   
   nextButton.onclick = () => {
-    // Save progress before moving to next page
-    const nextPuzzle = currentPuzzle + 1;
-    if (nextPuzzle <= 5) {
-      saveProgress(nextPuzzle);
-    } else {
-      // Completed all puzzles
-      saveProgress(6); // 6 indicates completed
-    }
-    
-    // Prevent going back
-    window.location.replace(config.nextPage);
+    window.location.href = config.nextPage;
   };
   
   document.getElementById("submit-button").insertAdjacentElement("afterend", nextButton);
