@@ -96,31 +96,25 @@ async function checkAndRedirectIfNeeded() {
       return;
     }
     
-    // If progress exists and user is on wrong page, redirect
-    if (currentProgress > 0) {
-      const expectedPage = currentProgress;
-      if (currentPage !== expectedPage) {
-        console.log(`Redirecting from puzzle ${currentPage} to puzzle ${expectedPage}`);
-        if (expectedPage <= 5) {
-          const redirectUrl = expectedPage === 1 ? 'puzzle.html' : `puzzle${expectedPage}.html`;
-          window.location.href = redirectUrl;
-          return;
-        } else {
-          // User completed all puzzles, go to results
-          window.location.href = 'results.html';
-          return;
-        }
-      }
-    }
+    // For puzzle pages, check if user is trying to go backwards or skip ahead
+    const maxAllowedPuzzle = Math.max(1, currentProgress); // At minimum, allow puzzle 1
     
-    // If no progress and user is on a puzzle page, redirect to index
-    if (currentProgress === 0 && currentPage > 0) {
-      console.log('No progress found, redirecting to index');
-      window.location.href = 'index.html';
+    if (currentPage > maxAllowedPuzzle) {
+      // User is trying to skip ahead
+      console.log(`User trying to skip ahead from puzzle ${currentPage} to max allowed ${maxAllowedPuzzle}`);
+      const redirectUrl = maxAllowedPuzzle === 1 ? 'puzzle.html' : `puzzle${maxAllowedPuzzle}.html`;
+      window.location.href = redirectUrl;
       return;
     }
     
-    // User is on correct page, load puzzle data
+    // If user has completed all puzzles and tries to go back to a puzzle page
+    if (currentProgress >= 6 && currentPage > 0) {
+      console.log('User completed all puzzles, redirecting to results');
+      window.location.href = 'results.html';
+      return;
+    }
+    
+    // User is on correct page or allowed to be here, load puzzle data
     loadPuzzleData();
     
   } catch (error) {
