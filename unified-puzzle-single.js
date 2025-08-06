@@ -107,8 +107,10 @@ function resetPuzzleState() {
   guessCount = 0;
 
   // Clear previous puzzle state
-  document.getElementById("guess").value = "";
-  document.getElementById("guess").disabled = false;
+  document.getElementById("month-select").value = "";
+  document.getElementById("year-input").value = "";
+  document.getElementById("month-select").disabled = false;
+  document.getElementById("year-input").disabled = false;
   document.getElementById("feedback").textContent = "";
   document.getElementById("guess-history").innerHTML = "";
   document.getElementById("submit-button").style.display = "inline-block";
@@ -240,6 +242,14 @@ function getBackgroundColor(guessVal, actualVal) {
   return null;
 }
 
+function getMonthName(monthNumber) {
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  return months[Number(monthNumber) - 1];
+}
+
 function createGuessHistoryEntry(guess, actual) {
   const [year, month, day] = guess.split("-");
   const [actualYear, actualMonth, actualDay] = actual.split("-");
@@ -249,24 +259,13 @@ function createGuessHistoryEntry(guess, actual) {
 
   // Month
   const monthDiv = document.createElement("div");
-  monthDiv.textContent = Number(month);
+  monthDiv.textContent = getMonthName(month);
   monthDiv.classList.add("guess-part");
   const monthColor = getBackgroundColor(month, actualMonth);
   if (monthColor) {
     monthDiv.style.backgroundColor = monthColor;
     monthDiv.style.color = "white";
     monthDiv.style.borderRadius = "4px";
-  }
-
-  // Day
-  const dayDiv = document.createElement("div");
-  dayDiv.textContent = Number(day);
-  dayDiv.classList.add("guess-part");
-  const dayColor = getBackgroundColor(day, actualDay);
-  if (dayColor) {
-    dayDiv.style.backgroundColor = dayColor;
-    dayDiv.style.color = "white";
-    dayDiv.style.borderRadius = "4px";
   }
 
   // Year
@@ -281,33 +280,58 @@ function createGuessHistoryEntry(guess, actual) {
   }
 
   listItem.appendChild(monthDiv);
-  listItem.appendChild(dayDiv);
   listItem.appendChild(yearDiv);
 
   return listItem;
 }
 
+// Check if month and year match (ignoring day)
+function isCorrectMonthYear(guess, actual) {
+  const [guessYear, guessMonth] = guess.split("-");
+  const [actualYear, actualMonth] = actual.split("-");
+  
+  return guessYear === actualYear && guessMonth === actualMonth;
+}
+
+// Get guess from month/year inputs and format as YYYY-MM-DD
+function getGuessFromInputs() {
+  const monthSelect = document.getElementById("month-select");
+  const yearInput = document.getElementById("year-input");
+  
+  const month = monthSelect.value;
+  const year = yearInput.value;
+  
+  if (!month || !year) {
+    return null;
+  }
+  
+  // Format as YYYY-MM-DD (day doesn't matter for comparison, using 01)
+  return `${year}-${month}-01`;
+}
+
 function checkGuess() {
-  const guess = document.getElementById("guess").value;
+  const guess = getGuessFromInputs();
   const actual = document.getElementById("actual-date").value;
   const feedback = document.getElementById("feedback");
   const historyList = document.getElementById("guess-history");
   const submitBtn = document.getElementById("submit-button");
-  const guessInput = document.getElementById("guess");
+  const monthSelect = document.getElementById("month-select");
+  const yearInput = document.getElementById("year-input");
 
   if (!guess) {
-    feedback.textContent = "Please enter a date.";
-    feedback.style.color = "red";
+    feedback.textContent = "Please select both a month and year.";
+    feedback.style.color = "#cc2f26";
     return;
   }
 
   if (guessCount >= maxGuesses) {
-    const [year, month, day] = actual.split("-");
-    const formattedDate = `${Number(month)}/${Number(day)}/${year}`;
-    feedback.textContent = `No more guesses allowed. The correct date was ${formattedDate}.`;
-    feedback.style.color = "red";
+    const [actualYear, actualMonth] = actual.split("-");
+    const formattedDate = `${getMonthName(actualMonth)} ${actualYear}`;
+    feedback.textContent = `No more guesses allowed. The correct month/year was ${formattedDate}.`;
+    feedback.style.color = "#cc2f26";
     submitBtn.style.display = "none";
-    guessInput.disabled = true;
+    monthSelect.disabled = true;
+    yearInput.disabled = true;
     showNextPuzzleButton();
     return;
   }
@@ -318,25 +342,27 @@ function checkGuess() {
   const listItem = createGuessHistoryEntry(guess, actual);
   historyList.prepend(listItem);
 
-  const [actualYear, actualMonth, actualDay] = actual.split("-");
-  const formattedDate = `${Number(actualMonth)}/${Number(actualDay)}/${actualYear}`;
+  const [actualYear, actualMonth] = actual.split("-");
+  const formattedDate = `${getMonthName(actualMonth)} ${actualYear}`;
 
-  if (guess === actual) {
+  if (isCorrectMonthYear(guess, actual)) {
     localStorage.setItem(`puzzle${currentPuzzle}_correct`, "true");
     feedback.textContent = "Correct! 🎉";
     feedback.style.color = "green";
     submitBtn.style.display = "none";
-    guessInput.disabled = true;
+    monthSelect.disabled = true;
+    yearInput.disabled = true;
     showNextPuzzleButton();
   } else if (guessCount === maxGuesses) {
     localStorage.setItem(`puzzle${currentPuzzle}_correct`, "false");
-    feedback.textContent = `Incorrect. You've used all your guesses. The correct date was ${formattedDate}.`;
-    feedback.style.color = "red";
+    feedback.textContent = `Incorrect. You've used all your guesses. The correct month/year was ${formattedDate}.`;
+    feedback.style.color = "#cc2f26";
     submitBtn.style.display = "none";
-    guessInput.disabled = true;
+    monthSelect.disabled = true;
+    yearInput.disabled = true;
     showNextPuzzleButton();
   } else {
     feedback.textContent = `${maxGuesses - guessCount} guesses remaining.`;
-    feedback.style.color = "red";
+    feedback.style.color = "#cc2f26";
   }
 }
