@@ -84,7 +84,10 @@ async function loadPuzzleData() {
 
 async function loadCurrentPuzzle() {
   // Update progress indicator
-  document.getElementById("current-puzzle").textContent = currentPuzzle;
+  const progressEl = document.getElementById("current-puzzle");
+  if (progressEl) {
+    progressEl.textContent = currentPuzzle;
+  }
 
   const videoIdKey = `video${currentPuzzle}Id`;
   const videoId = todaysPuzzleData[videoIdKey];
@@ -106,14 +109,34 @@ async function loadCurrentPuzzle() {
 function resetPuzzleState() {
   guessCount = 0;
 
-  // Clear previous puzzle state
-  document.getElementById("month-select").value = "";
-  document.getElementById("year-input").value = "";
-  document.getElementById("month-select").disabled = false;
-  document.getElementById("year-input").disabled = false;
-  document.getElementById("feedback").textContent = "";
-  document.getElementById("guess-history").innerHTML = "";
-  document.getElementById("submit-button").style.display = "inline-block";
+  // Clear previous puzzle state - check if elements exist first
+  const monthSelect = document.getElementById("month-select");
+  const yearInput = document.getElementById("year-input");
+  const feedback = document.getElementById("feedback");
+  const guessHistory = document.getElementById("guess-history");
+  const submitButton = document.getElementById("submit-button");
+
+  if (monthSelect) {
+    monthSelect.value = "";
+    monthSelect.disabled = false;
+  }
+  
+  if (yearInput) {
+    yearInput.value = "";
+    yearInput.disabled = false;
+  }
+  
+  if (feedback) {
+    feedback.textContent = "";
+  }
+  
+  if (guessHistory) {
+    guessHistory.innerHTML = "";
+  }
+  
+  if (submitButton) {
+    submitButton.style.display = "inline-block";
+  }
 
   // Remove any existing next puzzle button
   const existingNextButton = document.getElementById("next-puzzle-button");
@@ -160,7 +183,7 @@ async function loadVideoInfo(videoId) {
     console.log(`Fetched and cached video ${currentPuzzle}:`, videoInfo);
   }
 
-  // Display video info
+  // Display video info - check if elements exist first
   console.log('Setting video info in DOM...'); // Debug log
 
   const titleEl = document.getElementById("video-title");
@@ -188,18 +211,28 @@ async function loadChannelInfo(videoId) {
     const channelTitle = noembedData.author_name || "Channel name unavailable";
     const channelURL = noembedData.author_url || "#";
 
-    document.getElementById("channel-name").textContent = channelTitle;
-    if (document.getElementById("channel-name").tagName === 'A') {
-      document.getElementById("channel-name").href = channelURL;
+    const channelNameEl = document.getElementById("channel-name");
+    const channelIconEl = document.getElementById("channel-icon");
+
+    if (channelNameEl) {
+      channelNameEl.textContent = channelTitle;
+      if (channelNameEl.tagName === 'A') {
+        channelNameEl.href = channelURL;
+      }
     }
 
-    const fallbackIcon = `https://www.google.com/s2/favicons?sz=64&domain_url=${channelURL}`;
-    document.getElementById("channel-icon").src = fallbackIcon;
+    if (channelIconEl) {
+      const fallbackIcon = `https://www.google.com/s2/favicons?sz=64&domain_url=${channelURL}`;
+      channelIconEl.src = fallbackIcon;
+    }
 
   } catch (error) {
     console.error("Error loading channel info:", error);
-    document.getElementById("channel-name").textContent = "Channel name unavailable";
-    document.getElementById("channel-icon").src = "https://www.google.com/s2/favicons?sz=64&domain_url=";
+    const channelNameEl = document.getElementById("channel-name");
+    const channelIconEl = document.getElementById("channel-icon");
+    
+    if (channelNameEl) channelNameEl.textContent = "Channel name unavailable";
+    if (channelIconEl) channelIconEl.src = "https://www.google.com/s2/favicons?sz=64&domain_url=";
   }
 }
 
@@ -228,7 +261,10 @@ function showNextPuzzleButton() {
   nextButton.style.fontSize = "1em";
   nextButton.style.cursor = "pointer";
 
-  document.getElementById("submit-button").insertAdjacentElement("afterend", nextButton);
+  const submitButton = document.getElementById("submit-button");
+  if (submitButton) {
+    submitButton.insertAdjacentElement("afterend", nextButton);
+  }
 }
 
 function getBackgroundColor(guessVal, actualVal) {
@@ -298,6 +334,10 @@ function getGuessFromInputs() {
   const monthSelect = document.getElementById("month-select");
   const yearInput = document.getElementById("year-input");
   
+  if (!monthSelect || !yearInput) {
+    return null;
+  }
+  
   const month = monthSelect.value;
   const year = yearInput.value;
   
@@ -311,12 +351,19 @@ function getGuessFromInputs() {
 
 function checkGuess() {
   const guess = getGuessFromInputs();
-  const actual = document.getElementById("actual-date").value;
+  const actualDateEl = document.getElementById("actual-date");
   const feedback = document.getElementById("feedback");
   const historyList = document.getElementById("guess-history");
   const submitBtn = document.getElementById("submit-button");
   const monthSelect = document.getElementById("month-select");
   const yearInput = document.getElementById("year-input");
+
+  if (!actualDateEl || !feedback || !historyList || !submitBtn || !monthSelect || !yearInput) {
+    console.error("Required DOM elements not found");
+    return;
+  }
+
+  const actual = actualDateEl.value;
 
   if (!guess) {
     feedback.textContent = "Please select both a month and year.";
