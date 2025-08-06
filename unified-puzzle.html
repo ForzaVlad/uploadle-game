@@ -8,6 +8,8 @@
 </head>
 <body>
   <div class="container">
+    <!-- How to Play button in upper right corner -->
+    <button class="button how-to-button-small" onclick="openModal()">How to Play</button>
 
     <h1 id="page-title">
       Uploa<span id="dle">dle</span>
@@ -18,50 +20,81 @@
        <span id="current-puzzle">1</span> of 5
     </div>
 
-    <!-- Thumbnail shown first -->
-    <img id="thumbnail" src="" alt="Video Thumbnail" width="560" />
-
-    <!-- Title and views now appear BELOW the thumbnail -->
-    <h1 id="video-title">Loading title...</h1>
-    <p id="view-count">Loading views...</p>
-
-    <div id="channel-info" style="display: flex; align-items: center; margin: 10px 0;">
-      <img id="channel-icon" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;" />
-      <span id="channel-name" style="font-size: 1.1em; font-weight: bold;"></span>
+    <!-- Thumbnail centered -->
+    <div style="text-align: center; margin-bottom: 10px;">
+      <img id="thumbnail" src="" alt="Video Thumbnail" width="560" style="max-width: 100%; height: auto;" />
     </div>
 
-    <p>When was this Youtube video uploaded? (Month and Year)</p>
-    <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 10px 0;">
-      <select id="month-select" style="padding: 8px; font-size: 1em; border: 1px solid #ccc; border-radius: 4px;">
-        <option value="">Select Month</option>
-        <option value="01">January</option>
-        <option value="02">February</option>
-        <option value="03">March</option>
-        <option value="04">April</option>
-        <option value="05">May</option>
-        <option value="06">June</option>
-        <option value="07">July</option>
-        <option value="08">August</option>
-        <option value="09">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
-      </select>
-      <input type="number" id="year-input" placeholder="Year" min="2005" max="2025" 
-             style="padding: 8px; font-size: 1em; border: 1px solid #ccc; border-radius: 4px; width: 80px;" />
-    </div>
-    <input type="hidden" id="actual-date" />
-    <div style="text-align: center; margin-top: 10px;">
-    <button id="submit-button" onclick="checkGuess()">Submit Guess</button>
-    <button id="next-button" style="display: none; margin-left: 10px;">Next Puzzle</button>
+    <!-- Content container aligned with thumbnail's left edge -->
+    <div id="video-content" style="max-width: 560px; margin: 0 auto;">
+      <!-- Title and views now appear BELOW the thumbnail -->
+      <h1 id="video-title">Loading title...</h1>
+      <p id="view-count">Loading views...</p>
+
+      <div id="channel-info" style="display: flex; align-items: center; margin: 10px 0;">
+        <img id="channel-icon" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;" />
+        <span id="channel-name" style="font-size: 1.1em; font-weight: bold;"></span>
+      </div>
+
+      <p style="text-align: center;">When was this Youtube video uploaded? (Month and Year)</p>
+      <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 10px 0;">
+        <select id="month-select" style="padding: 8px; font-size: 1em; border: 1px solid #ccc; border-radius: 4px;">
+          <option value="">Select Month</option>
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07">July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+        <input type="number" id="year-input" placeholder="Year" min="2005" max="2025" 
+               style="padding: 8px; font-size: 1em; border: 1px solid #ccc; border-radius: 4px; width: 80px;" />
+      </div>
+      <input type="hidden" id="actual-date" />
+      <div style="text-align: center; margin-top: 10px;">
+      <button id="submit-button" onclick="checkGuess()">Submit Guess</button>
+      <button id="next-button" style="display: none; margin-left: 10px;">Next Puzzle</button>
+      </div>
+
+      <p id="feedback"></p>
+      <ul id="guess-history"></ul>
     </div>
 
-    <p id="feedback"></p>
-    <ul id="guess-history"></ul>
+  </div>
 
+  <!-- Modal -->
+  <div id="howToModal" class="modal">
+    <div class="modal-content">
+      <h2>How to Play Uploadle</h2>
+      <p><strong>Welcome to Uploadle!</strong> Test your YouTube and pop culture knowledge by guessing when popular videos were uploaded.</p>
+      
+      <p><strong>Your Goal:</strong> Guess the correct month and year when each video was uploaded.</p>
+      
+      <p><strong>How it works:</strong></p>
+      <ul>
+        <li>You'll see a video thumbnail, title, view count, and channel info</li>
+        <li>Select the month and year you think the video was uploaded</li>
+        <li>You have up to 4 guesses per video</li>
+        <li>Your guesses will be color-coded to help you:</li>
+        <ul>
+          <li><strong style="color: #6aaa64;">Green:</strong> Exact match!</li>
+          <li><strong style="color: #D7B300;">Yellow:</strong> Close (within 2 months or within 1 year)</li>
+          <li><strong>Gray:</strong> Not close</li>
+        </ul>
+      </ul>
+      
+      <p><strong>Daily Challenge:</strong> There are 5 videos to guess each day. Try to get them all right!</p>
+      
+      <button class="modal-close-button" onclick="closeModal()">Got it!</button>
+    </div>
   </div>
 
   <script src="unified-puzzle-single.js"></script>
 </body>
-
 </html>
