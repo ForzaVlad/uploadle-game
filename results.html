@@ -95,12 +95,34 @@
       color: #666;
       font-size: 1.2em;
     }
+
+    /* Button styles */
+    a.button, button.button {
+      padding: 15px 30px;
+      font-size: 1.2em;
+      color: white;
+      text-decoration: none;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-family: 'Roboto', Arial, sans-serif;
+      display: inline-block;
+    }
+
+    a.button.how-to-button, button.button.how-to-button {
+      background-color: #00316E;
+    }
+
+    a.button.how-to-button:hover, button.button.how-to-button:hover {
+      background-color: #001B3A;
+    }
   </style>
 </head>
 <body>
   <div class="results-container">
     <div class="title">Uploa<span class="dle">dle</span></div>
-    <div class="subtitle">Today’s Results</div>
+    <div class="subtitle">Today's Results</div>
 
    <div class="result-row">
   <div class="result-left">
@@ -149,8 +171,17 @@
 
     <div class="score-summary" id="score-summary">You scored 0/5</div>
 
+    <!-- New text and button -->
+    <div style="text-align: center; margin-top: 30px;">
+      <p style="color: #666; font-size: 1.1em; margin-bottom: 20px;">
+        Check back tomorrow! A new set of videos goes live at 12 a.m. (midnight) CST every day!
+      </p>
+      <button class="button how-to-button" onclick="window.location.href='index.html'">
+        Return to Home Page
+      </button>
+    </div>
+
 
   <script src="scriptresults.js" defer></script>
 </body>
 </html>
-
