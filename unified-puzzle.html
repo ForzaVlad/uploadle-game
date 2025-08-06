@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daily YouTube Puzzle</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+
+    <h1 id="page-title">
+      Uploa<span id="dle">dle</span>
+    </h1>
+
+    <!-- Progress indicator -->
+    <div id="progress-indicator" style="text-align: center; margin: 10px 0; font-size: 1.1em; font-weight: bold;">
+       <span id="current-puzzle">1</span> of 5
+    </div>
+
+    <!-- Thumbnail shown first -->
+    <img id="thumbnail" src="" alt="Video Thumbnail" width="560" />
+
+    <!-- Title and views now appear BELOW the thumbnail -->
+    <h1 id="video-title">Loading title...</h1>
+    <p id="view-count">Loading views...</p>
+
+    <div id="channel-info" style="display: flex; align-items: center; margin: 10px 0;">
+      <img id="channel-icon" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;" />
+      <span id="channel-name" style="font-size: 1.1em; font-weight: bold;"></span>
+    </div>
+
+    <p>When was this Youtube video uploaded? (You only need to get the correct month and year!)</p>
+    <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 10px 0;">
+      <select id="month-select" style="padding: 8px; font-size: 1em; border: 1px solid #ccc; border-radius: 4px;">
+        <option value="">Select Month</option>
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+        <option value="08">August</option>
+        <option value="09">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+      <input type="number" id="year-input" placeholder="Year" min="2005" max="2025" 
+             style="padding: 8px; font-size: 1em; border: 1px solid #ccc; border-radius: 4px; width: 80px;" />
+    </div>
+    <input type="hidden" id="actual-date" />
+    <div style="text-align: center; margin-top: 10px;">
+    <button id="submit-button" onclick="checkGuess()">Submit Guess</button>
+    <button id="next-button" style="display: none; margin-left: 10px;">Next Puzzle</button>
+    </div>
+
+    <p id="feedback"></p>
+    <ul id="guess-history"></ul>
+
+  </div>
+
+  <script src="unified-puzzle-single.js"></script>
+</body>
+</html>

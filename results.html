@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Uploadle - Results</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #f4f4f4;
+      font-family: 'Roboto', Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .results-container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      max-width: 600px;
+      width: 90%;
+      box-sizing: border-box;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 3em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .title .dle {
+      color: #cc2f26;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      font-size: 1.25em;
+      margin-bottom: 30px;
+    }
+
+    .result-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .result-left {
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+    }
+
+    .result-number {
+      width: 30px;
+      text-align: right;
+      padding-right: 10px;
+      font-size: 1em;
+      color: #000;
+    }
+
+    .result-title {
+      flex-grow: 1;
+      color: #000;
+      font-size: 1em;
+    }
+
+    .progress-bar {
+      height: 6px;
+      width: 100px;
+      background-color: #ccc;
+      border-radius: 3px;
+      margin-left: 10px;
+    }
+
+
+
+    .correct {
+      color: green;
+    }
+
+    .incorrect {
+      color: red;
+    }
+
+    .score-summary {
+      text-align: center;
+      margin-top: 30px;
+      color: #666;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <div class="results-container">
+    <div class="title">Uploa<span class="dle">dle</span></div>
+    <div class="subtitle">Today’s Results</div>
+
+   <div class="result-row">
+  <div class="result-left">
+    <div class="result-number">1.</div>
+    <div class="result-title" id="title1">(Video 1 Title Here)</div>
+    <div class="progress-bar"></div>
+  </div>
+  <div class="result-icon" id="icon1"></div>
+</div>
+
+<div class="result-row">
+  <div class="result-left">
+    <div class="result-number">2.</div>
+    <div class="result-title" id="title2">(Video 2 Title Here)</div>
+    <div class="progress-bar"></div>
+  </div>
+  <div class="result-icon" id="icon2"></div>
+</div>
+
+<div class="result-row">
+  <div class="result-left">
+    <div class="result-number">3.</div>
+    <div class="result-title" id="title3">(Video 3 Title Here)</div>
+    <div class="progress-bar"></div>
+  </div>
+  <div class="result-icon" id="icon3"></div>
+</div>
+
+<div class="result-row">
+  <div class="result-left">
+    <div class="result-number">4.</div>
+    <div class="result-title" id="title4">(Video 4 Title Here)</div>
+    <div class="progress-bar"></div>
+  </div>
+  <div class="result-icon" id="icon4"></div>
+</div>
+
+<div class="result-row">
+  <div class="result-left">
+    <div class="result-number">5.</div>
+    <div class="result-title" id="title5">(Video 5 Title Here)</div>
+    <div class="progress-bar"></div>
+  </div>
+  <div class="result-icon" id="icon5"></div>
+</div>
+
+    <div class="score-summary" id="score-summary">You scored 0/5</div>
+
+
+  <script src="scriptresults.js" defer></script>
+</body>
+</html>
+
