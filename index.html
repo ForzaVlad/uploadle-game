@@ -128,7 +128,7 @@
       <ul>
         <li>You'll see a video thumbnail, title, view count, and channel info</li>
         <li>Select the month and year you think the video was uploaded</li>
-        <li>You have up to 10 guesses per video</li>
+        <li>You have up to 4 guesses per video</li>
         <li>Your guesses will be color-coded to help you:</li>
         <ul>
           <li><strong style="color: #6aaa64;">Green:</strong> Exact match!</li>
@@ -144,27 +144,31 @@
   </div>
 
   <script>
-    function openModal() {
-      document.getElementById('howToModal').style.display = 'block';
-    }
+    // Ensure DOM is loaded before setting up functions
+    document.addEventListener('DOMContentLoaded', function() {
+      // Make functions global so onclick can access them
+      window.openModal = function() {
+        document.getElementById('howToModal').style.display = 'block';
+      };
 
-    function closeModal() {
-      document.getElementById('howToModal').style.display = 'none';
-    }
+      window.closeModal = function() {
+        document.getElementById('howToModal').style.display = 'none';
+      };
 
-    // Close modal when clicking outside of it
-    window.onclick = function(event) {
-      const modal = document.getElementById('howToModal');
-      if (event.target === modal) {
-        closeModal();
-      }
-    }
+      // Close modal when clicking outside of it
+      window.onclick = function(event) {
+        const modal = document.getElementById('howToModal');
+        if (event.target === modal) {
+          window.closeModal();
+        }
+      };
 
-    // Close modal with Escape key
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape') {
-        closeModal();
-      }
+      // Close modal with Escape key
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          window.closeModal();
+        }
+      });
     });
   </script>
 </body>
